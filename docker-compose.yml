@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  codenotary-be:
+    build:
+      context: ../codenotary-be/
+      dockerfile: Dockerfile
+    container_name: codenotary-be-service
+    environment:
+      - PORT=${PORT}
+    ports:
+      - '3000:3000'
+    volumes:
+      - ../codenotary-be/src:/app/src
