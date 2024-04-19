@@ -11,6 +11,7 @@ div
     :rows="transactionsStore.list"
     :columns="columns"
     row-key="name"
+    :pagination="initialPagination"
   )
   TableSkeleton(v-else)
 </template>
@@ -20,8 +21,6 @@ import { onBeforeMount, ref } from 'vue'
 import { date } from 'quasar'
 import { useTransactionsStore } from 'stores/transactions-store'
 import TableSkeleton from 'components/TableSkeleton.vue'
-// import { useQuasar } from 'quasar'
-// import AddTransactionDrawer from 'components/AddTransactionDrawer.vue'
 
 defineOptions({
   name: 'TransactionList',
@@ -67,15 +66,16 @@ const columns = [
     align: 'left',
   },
 ]
-// const rows = ref()
 const drawerOpen = ref(true)
 const transactionsStore = useTransactionsStore()
-// const $q = useQuasar()
+const initialPagination = {
+  sortBy: 'time_created',
+  descending: true,
+  rowsPerPage: 50,
+}
 
 onBeforeMount(async () => {
-  // $q.notify('Message')
   // fetch data from the API
   await transactionsStore.fetchTransactions()
-  // rows.value = transactionsStore.list
 })
 </script>

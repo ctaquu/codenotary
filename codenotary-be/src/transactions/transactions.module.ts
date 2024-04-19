@@ -7,7 +7,7 @@ import { HttpModule } from '@nestjs/axios'
 @Module({
   imports: [
     HttpModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, HttpModule],
       useFactory: async (configService: ConfigService) => ({
         baseURL: configService.get('API_BASE_URL'),
         maxRedirects: configService.get('HTTP_MAX_REDIRECTS'),

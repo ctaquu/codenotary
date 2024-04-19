@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, ServiceUnavailableException } from '@nestjs/common'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { HttpService } from '@nestjs/axios'
 import { firstValueFrom } from 'rxjs'
@@ -24,7 +24,7 @@ export class TransactionsService {
       return Promise.resolve(true)
     } catch (e) {
       console.error('E001', e)
-      return Promise.reject(false)
+      throw new ServiceUnavailableException(`Service error: ${e}`)
     }
   }
 
@@ -60,7 +60,7 @@ export class TransactionsService {
       )
     } catch (e) {
       console.error('E002', e)
-      return Promise.reject(false)
+      throw new ServiceUnavailableException(`Service error: ${e}`)
     }
   }
 }

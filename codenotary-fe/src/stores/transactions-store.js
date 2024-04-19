@@ -45,12 +45,9 @@ export const useTransactionsStore = defineStore('transactions', {
           message: 'Transaction created successfully',
           color: 'positive',
         })
-
-        // // load data up-to-date data from the API
-        // await this.fetchTransactions()
+        // load data up-to-date data from the API
         return true
       } catch (e) {
-        console.info('eee', e)
         e.response.data.message.forEach((element) => {
           Notify.create({
             message: element,

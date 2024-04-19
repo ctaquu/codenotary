@@ -1,6 +1,6 @@
 import { IsEnum, IsIBAN, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
-export enum TYPE {
+export enum TRANSACTION_TYPE {
   SENDING = 'sending',
   RECEIVING = 'receiving',
 }
@@ -27,6 +27,6 @@ export class CreateTransactionDto {
   amount: number
 
   @IsNotEmpty()
-  @IsEnum(TYPE)
-  type: TYPE
+  @IsEnum(TRANSACTION_TYPE)
+  type: TRANSACTION_TYPE
 }
