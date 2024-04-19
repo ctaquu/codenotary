@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { HttpService } from '@nestjs/axios'
-import { catchError, firstValueFrom } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { Transaction } from './entities/transaction.entity'
 import { ConfigService } from '@nestjs/config'
 
@@ -13,26 +13,26 @@ export class TransactionsService {
   ) {}
 
   async create(createTransactionDto: CreateTransactionDto): Promise<boolean> {
-    this.httpService
-      .put('/document', createTransactionDto, {
-        headers: {
-          'X-API-Key': this.configService.get('IMMUDB_VAULT_PRIVATE_KEY'),
-        },
-      })
-      .pipe(
-        // pipe operator to handle errors
-        catchError((e) => {
-          return Promise.reject(e.toString())
+    try {
+      await firstValueFrom(
+        this.httpService.put('/document', createTransactionDto, {
+          headers: {
+            'X-API-Key': this.configService.get('IMMUDB_VAULT_PRIVATE_KEY'),
+          },
         }),
       )
-    return Promise.resolve(true)
+      return Promise.resolve(true)
+    } catch (e) {
+      console.error('E001', e)
+      return Promise.reject(false)
+    }
   }
 
   async findAll(): Promise<Transaction[]> {
     // fetch from external service/data source
-    const { data } = await firstValueFrom(
-      this.httpService
-        .post(
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.post(
           '/documents/search',
           {
             page: 1,
@@ -43,26 +43,24 @@ export class TransactionsService {
               'X-API-Key': this.configService.get('IMMUDB_VAULT_PUBLIC_KEY'),
             },
           },
-        )
-        .pipe(
-          // pipe operator to handle errors
-          catchError((e) => {
-            return Promise.reject(e.toString())
-          }),
         ),
-    )
-    // return parsed data into Transaction objects
-    return (
-      data.revisions
-        // filter out the revisions that are not transactions
-        .filter(
-          (revision: { document: CreateTransactionDto }) =>
-            revision.document.account_number,
-        )
-        // map the revisions to Transaction objects
-        .map((revision: { document: CreateTransactionDto }) => {
-          return new Transaction(revision.document)
-        })
-    )
+      )
+      // return parsed data into Transaction objects
+      return (
+        data.revisions
+          // filter out the revisions that are not transactions (created during development)
+          .filter(
+            (revision: { document: CreateTransactionDto }) =>
+              revision.document.account_number,
+          )
+          // map the revisions to Transaction objects
+          .map((revision: { document: CreateTransactionDto }) => {
+            return new Transaction(revision.document)
+          })
+      )
+    } catch (e) {
+      console.error('E002', e)
+      return Promise.reject(false)
+    }
   }
 }

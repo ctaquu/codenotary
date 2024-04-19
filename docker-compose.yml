@@ -12,3 +12,14 @@ services:
       - '3000:3000'
     volumes:
       - ./codenotary-be/src:/app/src
+  codenotary-fe:
+    build:
+      context: ./codenotary-fe/
+      dockerfile: Dockerfile
+    container_name: codenotary-fe-service
+    environment:
+      - PORT=${PORT}
+    ports:
+      - '9000:9000'
+    volumes:
+      - ./codenotary-fe/src:/app/src
