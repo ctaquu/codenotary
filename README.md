@@ -11,6 +11,7 @@ Both apps were written using node version 18.
 ```bash
 docker compose up
 ```
+#### API keys were stored in `.env.sample` file and copied to `.env` file using docker. This is not the way to handle sensitive information, but for simplicity of this assignment it was done this way.
 
 ### Fronted will be available at:
 [http://localhost:9000/](http://localhost:9000/)
