@@ -19,6 +19,8 @@ services:
     container_name: codenotary-fe-service
     environment:
       - PORT=${PORT}
+    depends_on:
+      - codenotary-be
     ports:
       - '9000:9000'
     volumes:
